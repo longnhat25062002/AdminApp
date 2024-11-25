@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/stretching"
+        android:icon="@android:drawable/ic_menu_recent_history"
+        android:title="Bài tập giãn cơ" />
+    <item
+        android:id="@+id/main_workout"
+        android:icon="@drawable/ic_main_workout"
+        android:title="Bài tập chính" />
+    <item
+        android:id="@+id/warmup"
+        android:icon="@drawable/ic_warmup"
+        android:title="Bài tập khởi động" />
+    <item
+        android:id="@+id/explore"
+        android:icon="@drawable/ic_explore"
+        android:title="Khám phá" />
+    <item
+        android:id="@+id/frequency"
+        android:icon="@drawable/ic_frequency"
+        android:title="Tần suất luyện tập" />
+    <item
+        android:id="@+id/report"
+        android:icon="@drawable/ic_report"
+        android:title="Báo cáo" />
+</menu>

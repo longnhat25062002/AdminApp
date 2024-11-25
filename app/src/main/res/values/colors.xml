@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Màu nền -->
+    <color name="colorPrimary">#6200EE</color>
+
+    <!-- Màu chính cho các nút -->
+    <color name="colorAccent">#03DAC5</color>
+
+    <!-- Màu nền cho các EditText -->
+    <color name="colorBackground">#FFFFFF</color>
+
+    <!-- Màu chữ -->
+    <color name="colorText">#000000</color>
+
+    <!-- Màu chữ trắng cho các nút -->
+    <color name="colorWhite">#FFFFFF</color>
+</resources>

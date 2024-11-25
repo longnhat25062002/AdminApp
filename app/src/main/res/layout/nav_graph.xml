@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    app:startDestination="@id/mainFragment">
+
+    <fragment
+        android:id="@+id/mainFragment"
+        android:name="com.example.myadmin.MainFragment"
+        android:label="Main Fragment"
+        tools:layout="@layout/fragment_main" />
+
+    <fragment
+        android:id="@+id/stretchingFragment"
+        android:name="com.example.myadmin.StretchingFragment"
+        android:label="Bài tập giãn cơ"
+        tools:layout="@layout/fragment_stretching" />
+
+    <fragment
+        android:id="@+id/mainWorkoutFragment"
+        android:name="com.example.myadmin.MainWorkoutFragment"
+        android:label="Bài tập chính"
+        tools:layout="@layout/fragment_main_workout" />
+
+    <fragment
+        android:id="@+id/warmupFragment"
+        android:name="com.example.myadmin.WarmupFragment"
+        android:label="Bài tập khởi động"
+        tools:layout="@layout/fragment_warmup" />
+
+    <fragment
+        android:id="@+id/exploreFragment"
+        android:name="com.example.myadmin.ExploreFragment"
+        android:label="Khám phá"
+        tools:layout="@layout/fragment_explore" />
+
+    <fragment
+        android:id="@+id/frequencyFragment"
+        android:name="com.example.myadmin.FrequencyFragment"
+        android:label="Tần suất luyện tập"
+        tools:layout="@layout/fragment_frequency" />
+
+    <fragment
+        android:id="@+id/reportFragment"
+        android:name="com.example.myadmin.ReportFragment"
+        android:label="Báo cáo"
+        tools:layout="@layout/fragment_report" />
+</navigation>
