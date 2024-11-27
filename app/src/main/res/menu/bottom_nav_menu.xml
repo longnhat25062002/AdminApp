@@ -27,17 +27,17 @@
 
     <item
         android:id="@+id/BaiTapKhamPha"
-        android:icon="@drawable/ic_report"
+        android:icon="@drawable/ic_category"
         android:title="Khám phá theo danh mục"
         />
     <item
         android:id="@+id/ListBaiTapKhamPha"
-        android:icon="@drawable/ic_report"
+        android:icon="@drawable/ic_exercises"
         android:title="Bài tập khám phá"
         />
     <item
         android:id="@+id/DanhGia"
-        android:icon="@drawable/ic_report"
+        android:icon="@drawable/ic_check"
         android:title="Đánh giá"
         />
 </menu>
