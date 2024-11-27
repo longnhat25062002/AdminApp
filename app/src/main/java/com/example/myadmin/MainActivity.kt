@@ -41,7 +41,7 @@ class MainActivity : AppCompatActivity() {
 
         // Đặt mặc định là Fragment Bài Tập chính
         if (savedInstanceState == null) {
-            loadFragment(MainWorkoutFragment())  // Fragment đầu tiên là Bài Tập chính
+            loadFragment(ReportFragment())  // Fragment đầu tiên là Bài Tập chính
         }
 
         // Cấu hình NavigationView item listener
@@ -52,7 +52,7 @@ class MainActivity : AppCompatActivity() {
                     true
                 }
                 R.id.explore -> {
-                    loadFragment(ExploreFragment()) // Fragment cho Khám Phá
+                    loadFragment(CategoryFragment()) // Fragment cho Khám Phá
                     true
                 }
                 R.id.warmup -> {
@@ -63,12 +63,24 @@ class MainActivity : AppCompatActivity() {
                     loadFragment(StretchingFragment()) // Fragment cho Bài tập giãn cơ
                     true
                 }
-                R.id.frequency -> {
-                    loadFragment(FrequencyFragment()) // Fragment cho Tần suất luyện tập
+                R.id.Body -> {
+                    loadFragment(CoTheTapTrungFragmentFragment()) // Fragment cho Tần suất luyện tập
                     true
                 }
                 R.id.report -> {
                     loadFragment(ReportFragment()) // Fragment cho Báo cáo
+                    true
+                }
+                R.id.BaiTapKhamPha -> {
+                    loadFragment(ListKhamPhaFragment()) // Fragment cho Khám Phá
+                    true
+                }
+                R.id.ListBaiTapKhamPha -> {
+                    loadFragment(ListBaiTapKhamPhaFragment()) // Fragment cho Khám Phá
+                    true
+                }
+                R.id.DanhGia -> {
+                    loadFragment(DanhGiaFragment()) // Fragment cho Khám Phá
                     true
                 }
                 else -> false

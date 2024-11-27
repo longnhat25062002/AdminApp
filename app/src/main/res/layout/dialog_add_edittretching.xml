@@ -20,15 +20,6 @@
             android:layout_height="wrap_content"
             android:hint="Tên bài tập (e.g., Bật nhảy)"
             android:text="" />
-
-        <!-- Body Part Spinner -->
-        <Spinner
-            android:id="@+id/spExercisePart"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-
-
         <!-- Exercise Time Input (for ThoiGian) -->
         <EditText
             android:id="@+id/etExerciseTime"
@@ -36,7 +27,11 @@
             android:layout_height="wrap_content"
             android:hint="Thời gian (giây)"
             android:inputType="number" />
-
+        <EditText
+            android:id="@+id/etExerciseVideo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Video " />
         <!-- Save Button -->
         <Button
             android:id="@+id/btnSave"

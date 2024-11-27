@@ -1,0 +1,28 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="16dp">
+
+    <!-- EditText for KhamPha Name -->
+    <EditText
+        android:id="@+id/khamphaName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Tên Khám Phá"
+        android:inputType="text"/>
+
+    <!-- Spinner for DanhMucKhamPha (Category) -->
+    <Spinner
+        android:id="@+id/spinnerCategory"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <!-- MultiAutoCompleteTextView for BaiTapKhamPha (Multiple select) -->
+    <MultiAutoCompleteTextView
+        android:id="@+id/multiSelectBaiTap"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Chọn Bài Tập"/>
+
+</LinearLayout>

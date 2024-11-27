@@ -3,16 +3,13 @@ package com.example.adminpt.fragments
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
-import android.widget.Spinner
-import android.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.myadmin.ExciseWarmup
-import com.example.myadmin.ExerciseWarmupAdapter
+import data.ExciseWarmup
+import com.example.myadmin.adapater.ExerciseWarmupAdapter
 import com.example.myadmin.R
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.database.*
@@ -23,17 +20,17 @@ class WarmupFragment : Fragment(R.layout.fragment_warmup) {
     private lateinit var exerciseAdapter: ExerciseWarmupAdapter
     private lateinit var database: DatabaseReference
     private val warmupExercises = mutableListOf<ExciseWarmup>()
-
+    private var filteredExercises = mutableListOf<ExciseWarmup>()
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         recyclerView = view.findViewById(R.id.recyclerViewStretching)
-        val searchView = view.findViewById<SearchView>(R.id.searchView)
+        val searchView = view.findViewById<androidx.appcompat.widget.SearchView>(R.id.searchView)
         database = FirebaseDatabase.getInstance().getReference("BaiTap/KhoiDong")
 
         // Setup RecyclerView
         recyclerView.layoutManager = LinearLayoutManager(context)
-        exerciseAdapter = ExerciseWarmupAdapter(warmupExercises, this::editExercise, this::deleteExercise)
+        exerciseAdapter = ExerciseWarmupAdapter(filteredExercises, this::editExercise, this::deleteExercise)
         recyclerView.adapter = exerciseAdapter
 
         // Load exercises from Firebase
@@ -45,7 +42,7 @@ class WarmupFragment : Fragment(R.layout.fragment_warmup) {
         }
 
         // Setup search functionality
-        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+        searchView.setOnQueryTextListener(object : androidx.appcompat.widget.SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 return false
             }
@@ -65,7 +62,8 @@ class WarmupFragment : Fragment(R.layout.fragment_warmup) {
                     val exercise = child.getValue(ExciseWarmup::class.java)
                     exercise?.let { warmupExercises.add(it) }
                 }
-                exerciseAdapter.notifyDataSetChanged()
+                filterExercises("")
+
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -75,12 +73,17 @@ class WarmupFragment : Fragment(R.layout.fragment_warmup) {
     }
 
     private fun filterExercises(query: String?) {
-        val filteredList = if (query.isNullOrEmpty()) {
-            warmupExercises
+        filteredExercises.clear()
+        if (query.isNullOrEmpty()) {
+            filteredExercises.addAll(warmupExercises)  // No filter
         } else {
-            warmupExercises.filter { it.TenBaiTap.contains(query, ignoreCase = true) }
+            for (exercise in warmupExercises) {
+                if (exercise.TenBaiTap.contains(query, ignoreCase = true)) {
+                    filteredExercises.add(exercise)  // Add matching exercises
+                }
+            }
         }
-        exerciseAdapter.updateData(filteredList)
+        exerciseAdapter.notifyDataSetChanged()
     }
 
     private fun showAddEditDialog(exercise: ExciseWarmup?) {
@@ -88,18 +91,13 @@ class WarmupFragment : Fragment(R.layout.fragment_warmup) {
 
         // Initialize EditTexts and Spinner
         val edtName = dialogView.findViewById<EditText>(R.id.etExerciseName)
-        val spPart = dialogView.findViewById<Spinner>(R.id.spExercisePart)
         val edtTime = dialogView.findViewById<EditText>(R.id.etExerciseTime)
-
-        val parts = listOf("Ngực", "Lưng", "Chân", "Tay", "Bụng")
-        val partAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, parts)
-        partAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        spPart.adapter = partAdapter
+        val edtVideo = dialogView.findViewById<EditText>(R.id.etExerciseVideo)
 
         // Pre-fill fields if editing
         exercise?.let {
             edtName.setText(it.TenBaiTap)
-            spPart.setSelection(parts.indexOf(it.BoPhan))
+            edtVideo.setText(it.Video)
             edtTime.setText(it.ThoiGian.toString())
         }
 
@@ -111,7 +109,7 @@ class WarmupFragment : Fragment(R.layout.fragment_warmup) {
 
         dialogView.findViewById<Button>(R.id.btnSave).setOnClickListener {
             val name = edtName.text.toString().trim()
-            val part = spPart.selectedItem.toString()
+            val video = edtVideo.text.toString().trim()
             val time = edtTime.text.toString().trim().toIntOrNull()
 
             if (name.isEmpty()) {
@@ -124,20 +122,19 @@ class WarmupFragment : Fragment(R.layout.fragment_warmup) {
             }
 
             if (exercise == null) {
-                val newId = database.push().key ?: ""
+                val newId = database.push().key.hashCode()
                 val newExercise = ExciseWarmup(
-                    ID = newId.hashCode(),
+                    ID = newId,
                     TenBaiTap = name,
-                    BoPhan = part,
                     ThoiGian = time,
-                    Video = "" // Optional
+                    Video = video
                 )
-                database.child(newId).setValue(newExercise)
+                database.child(newExercise.ID.toString()).setValue(newExercise)
             } else {
                 val updatedExercise = exercise.copy(
                     TenBaiTap = name,
-                    BoPhan = part,
-                    ThoiGian = time
+                    ThoiGian = time,
+                    Video = video
                 )
                 database.child(exercise.ID.toString()).setValue(updatedExercise)
             }

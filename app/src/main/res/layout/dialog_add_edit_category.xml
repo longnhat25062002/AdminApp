@@ -13,29 +13,11 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <!-- Exercise Name Input -->
         <EditText
-            android:id="@+id/etExerciseName"
+            android:id="@+id/CategoryName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Tên bài tập (e.g., Bật nhảy)"
-            android:text="" />
-
-
-        <!-- Exercise Time Input (for ThoiGian) -->
-        <EditText
-            android:id="@+id/etExerciseTime"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Thời gian (giây)"
-            android:inputType="number" />
-        <EditText
-            android:id="@+id/etExerciseVideo"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Video "
-            android:inputType="number" />
-        <!-- Save Button -->
+            android:hint="Tên bài tập" />
         <Button
             android:id="@+id/btnSave"
             android:layout_width="match_parent"

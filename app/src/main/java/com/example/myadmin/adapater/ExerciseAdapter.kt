@@ -1,4 +1,4 @@
-package com.example.myadmin
+package com.example.myadmin.adapater
 
 import android.view.LayoutInflater
 import android.view.View
@@ -6,7 +6,8 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.admin.Exercise
+import com.example.myadmin.R
+import data.Exercise
 
 class ExerciseAdapter(
     private var exercises: MutableList<Exercise>, // Sử dụng MutableList để dễ dàng thay đổi dữ liệu
@@ -19,6 +20,7 @@ class ExerciseAdapter(
         val tvPart: TextView = view.findViewById(R.id.tvExercisePart)
         val tvLevel: TextView = view.findViewById(R.id.tvExerciseLevel)
         val tvReps: TextView = view.findViewById(R.id.tvExerciseReps)
+        val tvVideo : TextView = view.findViewById(R.id.txtExerciseVideo)
         val btnEdit: Button = view.findViewById(R.id.btnEdit)
         val btnDelete: Button = view.findViewById(R.id.btnDelete)
     }
@@ -31,18 +33,18 @@ class ExerciseAdapter(
 
     override fun onBindViewHolder(holder: ExerciseViewHolder, position: Int) {
         val exercise = exercises[position]
-        holder.tvName.text = exercise.TenBaiTap // Hiển thị tên bài tập
-        holder.tvPart.text = exercise.BoPhan // Hiển thị bộ phận cơ thể
-        holder.tvLevel.text = exercise.MucDo // Hiển thị mức độ bài tập
-        holder.tvReps.text = exercise.SoRep.toString() // Hiển thị số rep
-
+        holder.tvName.text = "Tên bài tập : " + exercise.TenBaiTap // Hiển thị tên bài tập
+        holder.tvPart.text = "Bộ phận : " + exercise.BoPhan // Hiển thị bộ phận cơ thể
+        holder.tvLevel.text = "Mức độ : " + exercise.MucDo // Hiển thị mức độ bài tập
+        holder.tvReps.text = "Số rep : " + exercise.SoRep.toString() // Hiển thị số rep
+        holder.tvVideo.text = "Video : " +  exercise.Video.toString()
         // Xử lý nút sửa
         holder.btnEdit.setOnClickListener { onEdit(exercise) }
 
         // Xử lý nút xóa
         holder.btnDelete.setOnClickListener {
             onDelete(exercise.ID)
-            removeItem(position) // Xóa bài tập khỏi danh sách
+
         }
     }
 
@@ -63,13 +65,7 @@ class ExerciseAdapter(
         }
     }
 
-    // Hàm xóa bài tập khỏi danh sách
-    fun removeItem(position: Int) {
-        if (position >= 0 && position < exercises.size) {
-            exercises.removeAt(position) // Xóa bài tập tại vị trí chỉ định
-            notifyItemRemoved(position) // Thông báo cập nhật UI
-        }
-    }
+
 
     // Hàm cập nhật danh sách khi tìm kiếm
     fun updateList(newList: List<Exercise>) {

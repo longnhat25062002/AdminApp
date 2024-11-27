@@ -36,7 +36,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Số reps" />
-
+        <EditText
+            android:id="@+id/etExerciseVideo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Video" />
         <Button
             android:id="@+id/btnSave"
             android:layout_width="match_parent"

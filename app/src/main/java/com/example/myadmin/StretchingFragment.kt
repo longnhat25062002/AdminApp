@@ -3,16 +3,14 @@ package com.example.adminpt.fragments
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
-import android.widget.SearchView
-import android.widget.Spinner
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.admin.Exercise
-import com.example.myadmin.ExerciseAdapter
+import com.example.myadmin.adapater.ExcciseStreChingAdapter
+import data.ExciseStreching
 import com.example.myadmin.R
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.database.*
@@ -20,21 +18,21 @@ import com.google.firebase.database.*
 class StretchingFragment : Fragment(R.layout.fragment_stretching) {
 
     private lateinit var recyclerView: RecyclerView
-    private lateinit var exerciseAdapter: ExerciseAdapter
+    private lateinit var exerciseAdapter: ExcciseStreChingAdapter
     private lateinit var database: DatabaseReference
-    private val stretchingExercises = mutableListOf<Exercise>()
-    private val filteredExercises = mutableListOf<Exercise>()  // List to hold filtered results
+    private val stretchingExercises = mutableListOf<ExciseStreching>()
+    private val filteredExercises = mutableListOf<ExciseStreching>()  // List to hold filtered results
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         recyclerView = view.findViewById(R.id.recyclerViewStretching)
-        val searchView = view.findViewById<SearchView>(R.id.searchView)
+        val searchView = view.findViewById<androidx.appcompat.widget.SearchView>(R.id.searchView)
         database = FirebaseDatabase.getInstance().getReference("BaiTap/GianCo")
 
         // Setup RecyclerView
         recyclerView.layoutManager = LinearLayoutManager(context)
-        exerciseAdapter = ExerciseAdapter(filteredExercises, this::editExercise, this::deleteExercise)
+        exerciseAdapter = ExcciseStreChingAdapter(filteredExercises, this::editExercise, this::deleteExercise)
         recyclerView.adapter = exerciseAdapter
 
         // Load exercises from Firebase
@@ -46,7 +44,7 @@ class StretchingFragment : Fragment(R.layout.fragment_stretching) {
         }
 
         // Set up search functionality
-        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+        searchView.setOnQueryTextListener(object : androidx.appcompat.widget.SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 // Return false because we don't want to submit the query
                 return false
@@ -65,7 +63,7 @@ class StretchingFragment : Fragment(R.layout.fragment_stretching) {
             override fun onDataChange(snapshot: DataSnapshot) {
                 stretchingExercises.clear()
                 for (child in snapshot.children) {
-                    val exercise = child.getValue(Exercise::class.java)
+                    val exercise = child.getValue(ExciseStreching::class.java)
                     exercise?.let { stretchingExercises.add(it) }
                 }
                 filteredExercises.clear()
@@ -93,35 +91,14 @@ class StretchingFragment : Fragment(R.layout.fragment_stretching) {
         exerciseAdapter.notifyDataSetChanged()  // Refresh the RecyclerView
     }
 
-    private fun showAddEditDialog(exercise: Exercise?) {
-        val dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_add_edit, null)
+    private fun showAddEditDialog(exercise: ExciseStreching?) {
+        val dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_add_edittretching, null)
 
         // Initialize EditTexts and Spinners
         val edtName = dialogView.findViewById<EditText>(R.id.etExerciseName)
-        val spPart = dialogView.findViewById<Spinner>(R.id.spExercisePart)
-        val spLevel = dialogView.findViewById<Spinner>(R.id.spExerciseLevel)
-        val edtReps = dialogView.findViewById<EditText>(R.id.etExerciseReps)
+        val edttime = dialogView.findViewById<EditText>(R.id.etExerciseTime)
+        val edtvideo = dialogView.findViewById<EditText>(R.id.etExerciseVideo)
 
-        // Pre-fill fields if editing
-        exercise?.let {
-            edtName.setText(it.TenBaiTap)
-            val parts = listOf("Ngực", "Lưng", "Chân", "Tay", "Bụng")
-            val levels = listOf("Dễ", "Trung bình", "Khó")
-
-            // Setup adapters for Spinners
-            val partAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, parts)
-            partAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            spPart.adapter = partAdapter
-
-            val levelAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, levels)
-            levelAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            spLevel.adapter = levelAdapter
-
-            // Set pre-selected values
-            spPart.setSelection(parts.indexOf(it.BoPhan))
-            spLevel.setSelection(levels.indexOf(it.MucDo))
-            edtReps.setText(it.SoRep.toString())
-        }
 
         // Show MaterialAlertDialog
         val dialog = MaterialAlertDialogBuilder(requireContext())
@@ -129,32 +106,44 @@ class StretchingFragment : Fragment(R.layout.fragment_stretching) {
             .setView(dialogView)
             .setNegativeButton("Hủy", null)
             .create()
+        if (exercise != null) {
+            database.child(exercise.ID.toString()).get().addOnSuccessListener { dataSnapshot ->
+                val currentExercise = dataSnapshot.getValue(ExciseStreching::class.java)
+                if (currentExercise != null) {
+                    val name = dialogView.findViewById<EditText>(R.id.etExerciseName)
+                    val reps = dialogView.findViewById<EditText>(R.id.etExerciseTime)
+                    val video = dialogView.findViewById<EditText>(R.id.etExerciseVideo)
+                    // Điền dữ liệu hiện có vào các trường
+                    name.setText(currentExercise.TenBaiTap)
+                    reps.setText(currentExercise.ThoiGian.toString())
+                    video.setText(currentExercise.Video)
 
+                }
+            }.addOnFailureListener {
+                Toast.makeText(context, "Không thể tải dữ liệu", Toast.LENGTH_SHORT).show()
+            }
+        }
         // Save button logic
         dialogView.findViewById<Button>(R.id.btnSave).setOnClickListener {
             val name = edtName.text.toString().trim()
-            val part = spPart.selectedItem.toString()
-            val level = spLevel.selectedItem.toString()
-            val reps = edtReps.text.toString().trim().toIntOrNull()
-
-            if (name.isNotEmpty() && part.isNotEmpty() && level.isNotEmpty() && reps != null) {
+            val time = edttime.text.toString().trim().toIntOrNull()
+            val video = edtvideo.text.toString().trim()
+            if (name.isNotEmpty()&& video.isNotEmpty() && time != null) {
                 if (exercise == null) {
                     // Add new exercise
-                    val newExercise = Exercise(
+                    val newExercise = ExciseStreching(
                         ID = database.push().key.hashCode(),
                         TenBaiTap = name,
-                        BoPhan = part,
-                        MucDo = level,
-                        SoRep = reps
+                        ThoiGian = time,
+                        Video = video
                     )
                     database.child(newExercise.ID.toString()).setValue(newExercise)
                 } else {
                     // Update existing exercise
                     val updatedExercise = exercise.copy(
                         TenBaiTap = name,
-                        BoPhan = part,
-                        MucDo = level,
-                        SoRep = reps
+                        ThoiGian = time,
+                        Video = video
                     )
                     database.child(updatedExercise.ID.toString()).setValue(updatedExercise)
                 }
@@ -172,7 +161,7 @@ class StretchingFragment : Fragment(R.layout.fragment_stretching) {
         dialog.show()
     }
 
-    private fun editExercise(exercise: Exercise) {
+    private fun editExercise(exercise: ExciseStreching) {
         showAddEditDialog(exercise)
     }
 

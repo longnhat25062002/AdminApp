@@ -1,19 +1,18 @@
 package com.example.myadmin.fragments
 
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Spinner
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.admin.Exercise
-import com.example.myadmin.ExerciseAdapter
+import data.Exercise
+import com.example.myadmin.adapater.ExerciseAdapter
 import com.example.myadmin.R
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.database.*
@@ -29,7 +28,7 @@ class MainWorkoutFragment : Fragment(R.layout.fragment_main_workout) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val etSearchExercise = view.findViewById<EditText>(R.id.etSearchExercise)
+        val etSearchExercise = view.findViewById<androidx.appcompat.widget.SearchView>(R.id.etSearchExercise)
         val btnAddExercise = view.findViewById<Button>(R.id.btnAddExercise)
         recyclerView = view.findViewById(R.id.recyclerView)
 
@@ -48,17 +47,19 @@ class MainWorkoutFragment : Fragment(R.layout.fragment_main_workout) {
         btnAddExercise.setOnClickListener {
             showAddEditDialog(null) // Open dialog to add a new exercise
         }
-
-        // Handle Search input
-        etSearchExercise.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                filterExercises(s.toString().trim())
+        etSearchExercise.setOnQueryTextListener(object : androidx.appcompat.widget.SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                // Return false because we don't want to submit the query
+                return false
             }
 
-            override fun afterTextChanged(s: Editable?) {}
+            override fun onQueryTextChange(newText: String?): Boolean {
+                // Filter exercises based on search text
+                filterExercises(newText)
+                return true
+            }
         })
+
     }
 
     private fun loadExercises() {
@@ -78,16 +79,18 @@ class MainWorkoutFragment : Fragment(R.layout.fragment_main_workout) {
         })
     }
 
-    private fun filterExercises(query: String) {
+    private fun filterExercises(query: String?) {
         filteredExercises.clear()
-        if (query.isEmpty()) {
-            filteredExercises.addAll(exercises)
+        if (query.isNullOrEmpty()) {
+            filteredExercises.addAll(exercises)  // No filter
         } else {
-            filteredExercises.addAll(exercises.filter {
-                it.TenBaiTap.contains(query, ignoreCase = true)
-            })
+            for (exercise in exercises) {
+                if (exercise.TenBaiTap.contains(query, ignoreCase = true)) {
+                    filteredExercises.add(exercise)  // Add matching exercises
+                }
+            }
         }
-        exerciseAdapter.notifyDataSetChanged()
+        exerciseAdapter.notifyDataSetChanged()  // Refresh the RecyclerView
     }
 
     private fun showAddEditDialog(exercise: Exercise?) {
@@ -97,7 +100,7 @@ class MainWorkoutFragment : Fragment(R.layout.fragment_main_workout) {
         val spPart = dialogView.findViewById<Spinner>(R.id.spExercisePart)
         val spLevel = dialogView.findViewById<Spinner>(R.id.spExerciseLevel)
 
-        val parts = listOf("Ngực", "Lưng", "Chân", "Tay", "Bụng")
+        val parts = listOf("Ngực", "Vai và Lưng", "Chân", "Cánh Tay", "Bụng")
         val levels = listOf("Dễ", "Trung bình", "Khó")
 
         // Use ArrayAdapter for Spinner parts and levels
@@ -117,6 +120,27 @@ class MainWorkoutFragment : Fragment(R.layout.fragment_main_workout) {
             spPart.setSelection(partPosition)
             spLevel.setSelection(levelPosition)
         }
+        // Nếu exercise != null, nghĩa là chỉnh sửa, tải dữ liệu từ Firebase
+        if (exercise != null) {
+            database.child(exercise.ID.toString()).get().addOnSuccessListener { dataSnapshot ->
+                val currentExercise = dataSnapshot.getValue(Exercise::class.java)
+                if (currentExercise != null) {
+                    val name = dialogView.findViewById<EditText>(R.id.etExerciseName)
+                    val reps = dialogView.findViewById<EditText>(R.id.etExerciseReps)
+                    val video = dialogView.findViewById<EditText>(R.id.etExerciseVideo)
+                    // Điền dữ liệu hiện có vào các trường
+                    name.setText(currentExercise.TenBaiTap)
+                    reps.setText(currentExercise.SoRep.toString())
+                    video.setText(currentExercise.Video)
+
+                    // Đặt spinner về giá trị hiện tại
+                    spPart.setSelection(getIndex(spPart, currentExercise.BoPhan))
+                    spLevel.setSelection(getIndex(spLevel, currentExercise.MucDo))
+                }
+            }.addOnFailureListener {
+                Toast.makeText(context, "Không thể tải dữ liệu", Toast.LENGTH_SHORT).show()
+            }
+        }
 
         // Show dialog
         val dialog = MaterialAlertDialogBuilder(requireContext())
@@ -130,7 +154,7 @@ class MainWorkoutFragment : Fragment(R.layout.fragment_main_workout) {
             val part = spPart.selectedItem.toString()
             val level = spLevel.selectedItem.toString()
             val reps = dialogView.findViewById<EditText>(R.id.etExerciseReps).text.toString().trim().toIntOrNull()
-
+            val video = dialogView.findViewById<EditText>(R.id.etExerciseVideo).text.toString().trim()
             if (name.isNotEmpty() && part.isNotEmpty() && level.isNotEmpty() && reps != null) {
                 if (exercise == null) {
                     // Create a new exercise
@@ -139,15 +163,18 @@ class MainWorkoutFragment : Fragment(R.layout.fragment_main_workout) {
                         TenBaiTap = name,
                         BoPhan = part,
                         MucDo = level,
-                        SoRep = reps
+                        SoRep = reps,
+                        Video = video
                     )
                     database.child(newExercise.ID.toString()).setValue(newExercise)
                 } else {
+
                     // Update an existing exercise
                     exercise.TenBaiTap = name
                     exercise.BoPhan = part
                     exercise.MucDo = level
                     exercise.SoRep = reps
+                    exercise.Video = video
                     database.child(exercise.ID.toString()).setValue(exercise)
                 }
                 dialog.dismiss()
@@ -164,7 +191,14 @@ class MainWorkoutFragment : Fragment(R.layout.fragment_main_workout) {
     }
 
 
-
+    fun getIndex(spinner: Spinner, value: String): Int {
+        for (i in 0 until spinner.count) {
+            if (spinner.getItemAtPosition(i).toString() == value) {
+                return i
+            }
+        }
+        return 0
+    }
     private fun editExercise(exercise: Exercise) {
         showAddEditDialog(exercise)
     }

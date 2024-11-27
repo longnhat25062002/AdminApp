@@ -13,29 +13,26 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <!-- Exercise Name Input -->
         <EditText
-            android:id="@+id/etExerciseName"
+            android:id="@+id/khamphaName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Tên bài tập (e.g., Bật nhảy)"
-            android:text="" />
-
-
-        <!-- Exercise Time Input (for ThoiGian) -->
+            android:hint="Tên bài tập" />
         <EditText
-            android:id="@+id/etExerciseTime"
+            android:id="@+id/sorep"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Thời gian (giây)"
-            android:inputType="number" />
+            android:hint="Số rep" />
         <EditText
-            android:id="@+id/etExerciseVideo"
+            android:id="@+id/thoigian"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Video "
-            android:inputType="number" />
-        <!-- Save Button -->
+            android:hint="Thời gian" />
+        <EditText
+            android:id="@+id/video"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Video" />
         <Button
             android:id="@+id/btnSave"
             android:layout_width="match_parent"

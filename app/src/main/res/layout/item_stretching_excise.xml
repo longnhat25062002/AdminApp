@@ -1,44 +1,67 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:padding="8dp"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    android:elevation="4dp"
+    app:cardCornerRadius="8dp">
 
-    <TextView
-        android:id="@+id/txtExerciseName"
-        android:text="Tên bài tập"
-        android:textSize="16sp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+<LinearLayout
+android:layout_width="match_parent"
+android:layout_height="wrap_content"
+android:orientation="vertical"
+android:padding="16dp">  <!-- Thêm padding bên trong CardView -->
 
-    <TextView
-        android:id="@+id/txtExercisePart"
-        android:text="Bộ phận"
-        android:textSize="14sp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+<!-- Tên bài tập -->
+<TextView
+    android:id="@+id/txtExerciseName"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="Tên bài tập"
+    android:textSize="18sp"
+    android:textStyle="bold"
+    android:paddingBottom="4dp" />  <!-- Cách dòng dưới cho các TextView -->
 
+<!-- Thời gian -->
+<TextView
+    android:id="@+id/txtExerciseTime"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="Thời gian"
+    android:textSize="14sp"
+    android:paddingBottom="4dp" />
 
-    <TextView
-        android:id="@+id/txtExerciseTime"
-        android:text="Thời gian"
-        android:textSize="14sp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+<!-- Bộ phận (hoặc video) -->
+<TextView
+    android:id="@+id/txtExerciseVideo"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="Bộ phận"
+    android:textSize="14sp"
+    android:paddingBottom="8dp" />  <!-- Tạo khoảng cách dưới cùng của TextView -->
 
-    <!-- Nút chỉnh sửa -->
+<!-- Các nút hành động -->
+<LinearLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="end">  <!-- Đặt các nút ở bên phải -->
+
     <Button
         android:id="@+id/btnEditExercise"
-        android:text="Chỉnh sửa"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:backgroundTint="?attr/colorPrimary"/>
+        android:text="Chỉnh sửa"
+        android:layout_marginEnd="8dp"
+        android:backgroundTint="?attr/colorPrimary" />  <!-- Nút chỉnh sửa -->
 
-    <!-- Nút xóa -->
     <Button
         android:id="@+id/btnDeleteExercise"
-        android:text="Xóa"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:backgroundTint="?attr/colorError"/>
+        android:text="Xóa"
+        android:backgroundTint="?attr/colorError" />  <!-- Nút xóa -->
 </LinearLayout>
+</LinearLayout>
+
+    </androidx.cardview.widget.CardView>

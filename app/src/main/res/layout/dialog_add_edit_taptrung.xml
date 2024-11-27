@@ -1,0 +1,43 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="16dp">
+
+    <!-- MultiAutoCompleteTextView for BaiTapChinh -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Bài Tập Chính"
+        android:textStyle="bold"/>
+    <MultiAutoCompleteTextView
+        android:id="@+id/multiSelectBaiTapChinh"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Chọn Bài Tập Chính"/>
+
+    <!-- MultiAutoCompleteTextView for GianCo -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Giãn Cơ"
+        android:textStyle="bold"/>
+    <MultiAutoCompleteTextView
+        android:id="@+id/multiSelectGianCo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Chọn Giãn Cơ"/>
+
+    <!-- MultiAutoCompleteTextView for KhoiDong -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Khởi Động"
+        android:textStyle="bold"/>
+    <MultiAutoCompleteTextView
+        android:id="@+id/multiSelectKhoiDong"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Chọn Khởi Động"/>
+
+</LinearLayout>
